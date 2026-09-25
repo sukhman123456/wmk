@@ -495,11 +495,11 @@ const serviceAreas = [
 
 export function ServiceAreaSection() {
   return (
-    <section id="service-area" className="section-spacing bg-[#F7F9FC] border-b border-[#E2E8F0] scroll-mt-20">
+    <section id="service-area" className="section-spacing bg-[#F7F9FC] border-b border-[#E2E8F0] scroll-mt-20 overflow-hidden">
       <div className="container-site">
         <div className="grid gap-8 sm:gap-12 lg:grid-cols-12 lg:gap-14 items-center">
           {/* Left Column: Title, Subtitle, Checkmark List (cols 1-7) */}
-          <div className="lg:col-span-7">
+          <div className="lg:col-span-7 min-w-0">
             <div className="inline-flex items-center gap-2 font-display text-xs sm:text-sm font-bold tracking-[0.2em] text-[#F5BF3C] uppercase mb-2 sm:mb-3">
               <span className="h-0.5 w-5 sm:w-6 bg-[#F5BF3C]" />
               SERVICE AREA
@@ -527,23 +527,19 @@ export function ServiceAreaSection() {
           </div>
 
           {/* Right Column: Local Map Visual Card (cols 8-12) */}
-          <div className="lg:col-span-5 rounded-2xl border border-[#E2E8F0] bg-white p-5 sm:p-7 shadow-sm flex flex-col justify-between">
+          <div className="lg:col-span-5 min-w-0 w-full rounded-2xl border border-[#E2E8F0] bg-white p-4 sm:p-6 lg:p-7 shadow-sm flex flex-col justify-between overflow-hidden">
             {/* Real Interactive Google Map */}
-            <div className="relative aspect-16/10 min-h-[220px] w-full rounded-xl overflow-hidden border border-[#E2E8F0] bg-[#E2E8F0] shadow-inner">
+            <div className="relative w-full h-[220px] sm:h-[260px] md:h-[280px] rounded-xl overflow-hidden border border-[#E2E8F0] bg-[#E2E8F0] shadow-inner">
               <iframe
                 title="Diamond Roof Repair Location - 349 Inspire Blvd, Brampton, ON"
                 src="https://maps.google.com/maps?q=349+Inspire+Blvd,+Brampton,+ON+L6R+4E4&t=&z=14&ie=UTF8&iwloc=&output=embed"
-                className="w-full h-full border-0"
+                className="w-full h-full border-0 block"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
-              <div className="pointer-events-none absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5 rounded-md bg-[#071525]/90 px-2.5 py-1 text-[11px] font-display font-bold uppercase tracking-wider text-white shadow-md backdrop-blur-sm border border-white/10">
-                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Brampton, ON</span>
-              </div>
             </div>
 
-            <div className="mt-5 sm:mt-6">
+            <div className="mt-4 sm:mt-6">
               <div className="flex items-center gap-2 text-xs font-display font-bold uppercase tracking-wider text-[#F5BF3C] mb-1">
                 <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                 <span>We're Local</span>
@@ -556,19 +552,20 @@ export function ServiceAreaSection() {
               </p>
             </div>
 
-            <div className="mt-5 sm:mt-6 pt-4 sm:pt-5 border-t border-[#E2E8F0] flex items-center justify-between">
+            <div className="mt-4 sm:mt-6 pt-4 border-t border-[#E2E8F0] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               <a
                 href={`https://www.google.com/maps/search/?api=1&query=${business.mapsQuery}`}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs font-display font-bold uppercase tracking-wider text-[#0B1B30] hover:text-[#F5BF3C] transition-colors"
+                className="inline-flex items-center justify-center sm:justify-start gap-1.5 text-xs font-display font-bold uppercase tracking-wider text-[#0B1B30] hover:text-[#F5BF3C] transition-colors py-1"
               >
-                View on Google Maps →
+                <span>View on Google Maps</span>
+                <ArrowUpRight className="h-3.5 w-3.5" />
               </a>
 
               <a
                 href={business.phoneHref}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#F5BF3C] px-3.5 font-display text-xs font-extrabold uppercase tracking-wider text-[#071525] hover:bg-[#FFD45A] transition-all"
+                className="inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-[#F5BF3C] px-4 font-display text-xs font-extrabold uppercase tracking-wider text-[#071525] hover:bg-[#FFD45A] transition-all shadow-sm active:scale-95"
               >
                 <Phone className="h-3.5 w-3.5 fill-[#071525]" />
                 <span>Call Now</span>

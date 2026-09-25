@@ -59,7 +59,7 @@ export function ProjectGallery() {
   const [activeImg, setActiveImg] = useState<string | null>(null);
 
   return (
-    <section id="gallery" className="section-spacing bg-white border-b border-[#E2E8F0] scroll-mt-20">
+    <section id="gallery" className="section-spacing bg-white border-b border-[#E2E8F0] scroll-mt-20 overflow-hidden">
       <div className="container-site">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-14">
