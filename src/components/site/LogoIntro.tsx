@@ -8,27 +8,21 @@ interface LogoIntroProps {
 }
 
 /**
- * Cinematic Brand Reveal for Diamond Roof Repair & Handyman Services
+ * Premium Roofing-Themed Loading Animation for Diamond Roof Repair
  * 
- * Exact 7-Phase Sequence:
- * 1. 0.0s – 0.4s: Dark Cinematic Background (Deep navy #040B14 + subtle ambient center warm gold light at 0.15s).
- * 2. 0.4s – 1.1s: Diamond Symbol Pop-Up (Starts at 88% scale, 0 opacity -> 100% scale, 1 opacity, cubic-bezier, warm rim light).
- * 3. 0.9s – 1.6s: Cinematic Light Wave (Golden energy sweep expands outward horizontally underneath the diamond).
- * 4. 1.0s – 1.7s: Roof / House Formation (Emerges from golden light wave into solid/metallic roof silhouette under the diamond).
- * 5. 1.5s – 2.3s: Brand Text Reveal (Typography reveals from center outward: DIAMOND ROOF REPAIR & HANDYMAN SERVICES + BRAMPTON • ONTARIO).
- * 6. 2.3s – 2.8s: Complete Logo Composition Holds (~0.5s hold with subtle cinematic gold aura).
- * 7. 2.8s – 3.2s: Smooth Cinematic Dissolve into the preloaded hero section.
- * 
- * Total runtime: ~3.25 seconds.
+ * Features:
+ * - Full-screen deep navy background (#050E1A) with soft dark vignette.
+ * - Existing Diamond logo centered at the top.
+ * - Subtle, elegant architectural vector illustration of a professional roofer working on a rooftop slope.
+ * - Micro-animated roofer placing and inspecting a golden shingle tile.
+ * - Thin gold loading line that smoothly fills from 0% to 100% over ~2.2 seconds.
+ * - Underneath text: "PREPARING YOUR ROOF..." in brand gold tracking.
+ * - Smooth cinematic fade directly into the preloaded hero section at ~2.5s (total duration ~2.8s).
+ * - Click/tap quick-skip for instant entry.
+ * - Prefers-reduced-motion accessibility support.
  */
 export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
-  const [showAmbientGlow, setShowAmbientGlow] = useState(false);
-  const [showDiamond, setShowDiamond] = useState(false);
-  const [showWave, setShowWave] = useState(false);
-  const [showRoofGlow, setShowRoofGlow] = useState(false);
-  const [showRoofSolid, setShowRoofSolid] = useState(false);
-  const [showText, setShowText] = useState(false);
-  const [showHoldGlow, setShowHoldGlow] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [isExiting, setIsExiting] = useState(false);
   const [isDone, setIsDone] = useState(false);
 
@@ -43,7 +37,7 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
 
-    // Check for prefers-reduced-motion accessibility
+    // Check for prefers-reduced-motion
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -54,51 +48,31 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
       const t = setTimeout(() => {
         setIsDone(true);
         onCompleteRef.current?.();
-      }, 200);
+      }, 150);
       return () => clearTimeout(t);
     }
 
-    // 1. 0.15s: Subtle warm-gold ambient light source begins appearing in the center
-    const t0 = setTimeout(() => setShowAmbientGlow(true), 150);
+    // Trigger smooth 0% to 100% progress line fill
+    const tProgress = setTimeout(() => {
+      setProgress(100);
+    }, 80);
 
-    // 2. 0.4s: Diamond symbol smoothly pops up (scale 88% -> 100%, opacity 0 -> 1)
-    const t1 = setTimeout(() => setShowDiamond(true), 400);
-
-    // 3. 0.9s: Cinematic golden light wave sweeps horizontally underneath the diamond
-    const t2 = setTimeout(() => setShowWave(true), 900);
-
-    // 4. 1.0s: Roof/house shape emerges from the golden wave
-    const t3 = setTimeout(() => setShowRoofGlow(true), 1000);
-    const t3b = setTimeout(() => setShowRoofSolid(true), 1280);
-
-    // 5. 1.5s: Brand typography reveals from center outward
-    const t4 = setTimeout(() => setShowText(true), 1500);
-
-    // 6. 2.3s: Complete unified logo holds with subtle warm glow
-    const t5 = setTimeout(() => setShowHoldGlow(true), 2300);
-
-    // 7. 2.8s: Smooth cinematic dissolve into the live hero
-    const t6 = setTimeout(() => {
+    // At 2.4s: start smooth dissolve into hero
+    const tExit = setTimeout(() => {
       setIsExiting(true);
       onSplitStartRef.current?.();
-    }, 2800);
+    }, 2400);
 
-    // Complete handoff and clean unmount at 3.25s
-    const t7 = setTimeout(() => {
+    // At 2.85s: complete unmount
+    const tComplete = setTimeout(() => {
       setIsDone(true);
       onCompleteRef.current?.();
-    }, 3250);
+    }, 2850);
 
     return () => {
-      clearTimeout(t0);
-      clearTimeout(t1);
-      clearTimeout(t2);
-      clearTimeout(t3);
-      clearTimeout(t3b);
-      clearTimeout(t4);
-      clearTimeout(t5);
-      clearTimeout(t6);
-      clearTimeout(t7);
+      clearTimeout(tProgress);
+      clearTimeout(tExit);
+      clearTimeout(tComplete);
     };
   }, []);
 
@@ -106,239 +80,268 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
     return null;
   }
 
-  // Quick skip on user click or keypress
+  // Quick skip on click or keypress
   const handleQuickSkip = () => {
     setIsExiting(true);
     onSplitStartRef.current?.();
     setTimeout(() => {
       setIsDone(true);
       onCompleteRef.current?.();
-    }, 200);
+    }, 180);
   };
 
   return (
     <div
       role="dialog"
-      aria-label="Diamond Roof Repair brand reveal"
+      aria-label="Loading Diamond Roof Repair"
       onClick={handleQuickSkip}
       className={cn(
-        "fixed inset-0 z-[100] select-none flex items-center justify-center bg-[#040B14] cursor-default transition-opacity duration-450 ease-out",
+        "fixed inset-0 z-[100] select-none flex flex-col items-center justify-center bg-[#050E1A] cursor-default transition-opacity duration-450 ease-out",
         isExiting ? "opacity-0 pointer-events-none" : "opacity-100"
       )}
     >
-      {/* 1. Cinematic Atmospheric Dark Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(7,21,37,0.45)_0%,rgba(2,6,12,0.95)_100%)] pointer-events-none" />
+      {/* 1. Cinematic Dark Ambient Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(7,21,37,0.4)_0%,rgba(2,6,12,0.92)_100%)] pointer-events-none" />
 
-      {/* 2. Soft Golden Center Spotlight (Restrained & Warm) */}
+      {/* 2. Soft Warm Gold Ambient Spotlight behind center */}
       <div
-        className={cn(
-          "absolute w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full pointer-events-none transition-opacity duration-1000 blur-3xl will-change-transform",
-          showAmbientGlow ? "opacity-25" : "opacity-0"
-        )}
+        className="absolute w-[360px] sm:w-[480px] h-[360px] sm:h-[480px] rounded-full pointer-events-none blur-3xl opacity-20"
         style={{
           background:
-            "radial-gradient(circle, rgba(245, 191, 60, 0.35) 0%, rgba(7, 21, 37, 0) 70%)",
+            "radial-gradient(circle, rgba(245, 191, 60, 0.4) 0%, rgba(7, 21, 37, 0) 70%)",
         }}
       />
 
-      {/* Ambient Hold Glow behind Full Logo */}
-      <div
-        className={cn(
-          "absolute w-[440px] sm:w-[620px] h-[220px] sm:h-[300px] rounded-full pointer-events-none transition-opacity duration-700 blur-2xl will-change-transform",
-          showHoldGlow ? "opacity-35" : "opacity-0"
-        )}
-        style={{
-          background:
-            "radial-gradient(ellipse, rgba(245, 191, 60, 0.4) 0%, rgba(7, 21, 37, 0) 75%)",
-        }}
-      />
-
-      {/* 3. Center Brand Composition */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-4 w-full max-w-lg">
-        {/* Unified Logo Canvas: Exact aspect ratio matching the authentic 1024x409 asset */}
-        <div
-          className="relative w-[310px] sm:w-[410px] md:w-[460px] will-change-transform"
-          style={{ aspectRatio: "1024 / 409" }}
-        >
-          {/* ==========================================================
-              PHASE 2: DIAMOND SYMBOL POP-UP (0.4s – 1.1s)
-              Starts at 88% scale, 0 opacity.
-              Emerges forward smoothly to 100% scale and opacity with
-              a subtle warm-gold rim light.
-              ========================================================== */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform pointer-events-none",
-              showDiamond
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-[0.88]"
-            )}
-            style={{
-              clipPath: "polygon(36% 0%, 64% 0%, 64% 28.5%, 36% 28.5%)",
-              filter: showDiamond
-                ? "drop-shadow(0 0 14px rgba(245, 191, 60, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))"
-                : "none",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt="Diamond Symbol"
-              className="w-full h-full object-contain pointer-events-none"
-              loading="eager"
-            />
-          </div>
-
-          {/* ==========================================================
-              PHASE 3: CINEMATIC LIGHT WAVE (0.9s – 1.6s)
-              Elegant horizontal energy sweep underneath the Diamond.
-              Expands smoothly outward with soft golden edges and slight blur.
-              ========================================================== */}
-          <div
-            className={cn(
-              "pointer-events-none absolute left-1/2 -translate-x-1/2 w-[72%] max-w-[340px] h-4 z-20 flex items-center justify-center transition-all duration-700 ease-out will-change-transform",
-              showWave
-                ? "opacity-100 scale-x-100"
-                : "opacity-0 scale-x-0"
-            )}
-            style={{
-              top: "27.2%",
-              transformOrigin: "center center",
-            }}
-          >
-            {/* Soft Warm-Gold Ambient Glow Ribbon */}
-            <div className="absolute inset-x-2 h-3 bg-gradient-to-r from-transparent via-[#F5BF3C]/45 to-transparent blur-md" />
-
-            {/* Luminous Energy Sweep Trail */}
-            <svg
-              viewBox="0 0 340 18"
-              className="w-full h-full overflow-visible"
-              fill="none"
-            >
-              <defs>
-                <linearGradient id="goldLightSweep" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#F5BF3C" stopOpacity="0" />
-                  <stop offset="20%" stopColor="#F5BF3C" stopOpacity="0.4" />
-                  <stop offset="50%" stopColor="#FFF2B2" stopOpacity="0.95" />
-                  <stop offset="80%" stopColor="#F5BF3C" stopOpacity="0.4" />
-                  <stop offset="100%" stopColor="#F5BF3C" stopOpacity="0" />
-                </linearGradient>
-                <filter id="softTrailGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="1.5" result="blur" />
-                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                </filter>
-              </defs>
-
-              {/* Main Golden Energy Filament */}
-              <path
-                d="M 5 9 Q 85 5, 170 9 T 335 9"
-                stroke="url(#goldLightSweep)"
-                strokeWidth="1.75"
-                strokeLinecap="round"
-                filter="url(#softTrailGlow)"
-              />
-              {/* Secondary delicate harmonic filament */}
-              <path
-                d="M 30 9 Q 100 12, 170 9 T 310 9"
-                stroke="url(#goldLightSweep)"
-                strokeWidth="0.8"
-                strokeLinecap="round"
-                opacity="0.6"
-              />
-            </svg>
-          </div>
-
-          {/* ==========================================================
-              PHASE 4: ROOF / HOUSE FORMATION (1.0s – 1.7s)
-              Emerges smoothly from the golden light wave directly underneath
-              the Diamond. Starts as a soft golden light shape, then solidifies
-              into the clean solid/metallic roof silhouette and chimney.
-              ========================================================== */}
-          {/* 4A. Luminous Golden Light Roof (Soft glow emerging from wave) */}
-          <div
-            className={cn(
-              "absolute inset-0 pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform",
-              showRoofGlow
-                ? (showRoofSolid ? "opacity-20 scale-100" : "opacity-85 scale-100")
-                : "opacity-0 scale-[0.96]"
-            )}
-            style={{
-              clipPath: "polygon(14% 24%, 86% 24%, 86% 48.5%, 14% 48.5%)",
-              filter: "brightness(1.5) saturate(1.8) drop-shadow(0 0 16px rgba(245, 191, 60, 0.85))",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt=""
-              className="w-full h-full object-contain pointer-events-none"
-              loading="eager"
-            />
-          </div>
-
-          {/* 4B. Solid Metallic Roof Silhouette (Solidifies & connects with Diamond) */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform pointer-events-none",
-              showRoofSolid
-                ? "opacity-100 scale-100"
-                : "opacity-0 scale-[0.97]"
-            )}
-            style={{
-              clipPath: "polygon(14% 24%, 86% 24%, 86% 48.5%, 14% 48.5%)",
-              filter: showRoofSolid
-                ? "drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4))"
-                : "none",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt="Roof Silhouette"
-              className="w-full h-full object-contain pointer-events-none"
-              loading="eager"
-            />
-          </div>
-
-          {/* ==========================================================
-              PHASE 5: BRAND TEXT REVEAL (1.5s – 2.3s)
-              Typography reveals from the inside outward:
-              Starts slightly compressed toward the center with subtle upward lift,
-              then gently expands smoothly into full majestic alignment.
-              ========================================================== */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-750 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform pointer-events-none",
-              showText
-                ? "opacity-100 scale-x-100 translate-y-0"
-                : "opacity-0 scale-x-[0.91] translate-y-2"
-            )}
-            style={{
-              clipPath: "polygon(0% 48.5%, 100% 48.5%, 100% 100%, 0% 100%)",
-              transformOrigin: "center top",
-              filter: showText
-                ? "drop-shadow(0 2px 12px rgba(0, 0, 0, 0.55))"
-                : "none",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt="Diamond Roof Repair Brand Typography"
-              className="w-full h-full object-contain pointer-events-none"
-              loading="eager"
-            />
-          </div>
+      {/* 3. Main Centered Loader Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 w-full max-w-sm">
+        {/* A. Existing Diamond Logo (Small and Centered) */}
+        <div className="mb-5 sm:mb-6 flex justify-center">
+          <img
+            src={logoImg}
+            alt="Diamond Roof Repair & Handyman Services"
+            className="w-[170px] sm:w-[210px] h-auto object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.55)] pointer-events-none"
+            loading="eager"
+          />
         </div>
 
-        {/* Small Location Accent: BRAMPTON • ONTARIO
-            Reveals in harmony with the brand typography from center outward */}
-        <div
-          className={cn(
-            "mt-2 text-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] select-none will-change-transform",
-            showText
-              ? "opacity-100 translate-y-0 tracking-[0.34em] sm:tracking-[0.40em]"
-              : "opacity-0 translate-y-2 tracking-[0.16em]"
-          )}
-        >
-          <span className="font-display text-[0.65rem] sm:text-xs font-black uppercase text-[#F5BF3C] drop-shadow-[0_0_8px_rgba(245,191,60,0.35)]">
-            BRAMPTON • ONTARIO
+        {/* B. Professional Roofer Working on Rooftop (Architectural Modern Vector Illustration) */}
+        <div className="relative w-[230px] sm:w-[260px] h-[115px] sm:h-[130px] flex items-center justify-center">
+          <svg
+            viewBox="0 0 260 130"
+            className="w-full h-full overflow-visible pointer-events-none"
+            fill="none"
+          >
+            <defs>
+              {/* Gold Shingle Gradient */}
+              <linearGradient id="goldShingleGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#F5BF3C" stopOpacity="0.85" />
+                <stop offset="60%" stopColor="#FFE082" stopOpacity="0.98" />
+                <stop offset="100%" stopColor="#F5BF3C" stopOpacity="0.85" />
+              </linearGradient>
+
+              {/* Roof Slope Deep Slate Gradient */}
+              <linearGradient id="roofDeckGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stopColor="#1E293B" stopOpacity="0.7" />
+                <stop offset="100%" stopColor="#0B1320" stopOpacity="0.85" />
+              </linearGradient>
+            </defs>
+
+            {/* --- 1. Architectural Roof Pitch --- */}
+            {/* Slope fill under the rafters */}
+            <polygon
+              points="32,45 228,102 228,114 32,114"
+              fill="url(#roofDeckGrad)"
+            />
+
+            {/* Architectural Rafter / Deck Line */}
+            <line
+              x1="28"
+              y1="45"
+              x2="232"
+              y2="102"
+              stroke="#475569"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+            />
+            {/* Roof Eave Baseline */}
+            <line
+              x1="32"
+              y1="114"
+              x2="228"
+              y2="114"
+              stroke="#1E293B"
+              strokeWidth="1.5"
+            />
+
+            {/* Shingle Courses (Horizontal architectural row guides) */}
+            <line
+              x1="70"
+              y1="96"
+              x2="220"
+              y2="96"
+              stroke="#334155"
+              strokeWidth="1.5"
+              strokeDasharray="16 4"
+              opacity="0.6"
+            />
+            <line
+              x1="52"
+              y1="80"
+              x2="198"
+              y2="80"
+              stroke="#334155"
+              strokeWidth="1.5"
+              strokeDasharray="16 4"
+              opacity="0.6"
+            />
+            <line
+              x1="36"
+              y1="64"
+              x2="176"
+              y2="64"
+              stroke="#334155"
+              strokeWidth="1.5"
+              strokeDasharray="16 4"
+              opacity="0.6"
+            />
+
+            {/* Background Rooftop Chimney Silhouette */}
+            <rect
+              x="52"
+              y="28"
+              width="14"
+              height="22"
+              fill="#101E32"
+              stroke="#334155"
+              strokeWidth="1"
+              rx="1"
+            />
+
+            {/* Safety Anchor Line (Subtle professional roofing detail) */}
+            <path
+              d="M 34 45 C 52 48, 70 54, 88 62"
+              stroke="#F5BF3C"
+              strokeWidth="1"
+              strokeDasharray="3 3"
+              opacity="0.4"
+            />
+
+            {/* --- 2. Professional Roofer Figure --- */}
+            {/* Kneeling Legs / Work Trousers resting safely on roof pitch */}
+            <path
+              d="M 80 80 L 96 84 L 114 85 L 104 72 L 88 68 Z"
+              fill="#334155"
+            />
+
+            {/* Work Boot */}
+            <path
+              d="M 75 79 C 75 76, 80 75, 84 78 L 82 82 Z"
+              fill="#1E293B"
+            />
+
+            {/* Upper Body / Workwear Jacket */}
+            <path
+              d="M 88 68 C 91 58, 100 52, 112 53 C 120 53, 126 59, 124 68 L 108 72 Z"
+              fill="#64748B"
+            />
+            {/* High-visibility safety harness lines */}
+            <path
+              d="M 102 53 L 110 71 M 114 54 L 120 70"
+              stroke="#F5BF3C"
+              strokeWidth="1.25"
+              opacity="0.85"
+            />
+
+            {/* Head & Safety Hard Hat (Brand Gold) */}
+            <circle cx="118" cy="46" r="6" fill="#CBD5E1" />
+            {/* Helmet dome */}
+            <path
+              d="M 110 46 C 110 39, 126 39, 126 46 L 129 48 L 109 48 Z"
+              fill="#F5BF3C"
+            />
+            {/* Helmet visor */}
+            <line
+              x1="126"
+              y1="47"
+              x2="132"
+              y2="48"
+              stroke="#FFE082"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+            />
+
+            {/* --- 3. Simple Roofing Action: Placing / Inspecting Shingle --- */}
+            {/* Group with gentle placing micro-motion */}
+            <g className="animate-shingle-action">
+              {/* Roofer Arms reaching down to align the shingle */}
+              <path
+                d="M 116 59 L 130 65 L 144 71"
+                stroke="#94A3B8"
+                strokeWidth="2.75"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              {/* Work Glove */}
+              <circle cx="145" cy="72" r="2.5" fill="#F5BF3C" />
+
+              {/* The Shingle Tile being placed precisely into the roof row */}
+              <polygon
+                points="141,71 175,81 170,85 136,75"
+                fill="url(#goldShingleGrad)"
+                filter="drop-shadow(0 1px 4px rgba(245,191,60,0.5))"
+              />
+              {/* Shingle top architectural bevel edge */}
+              <line
+                x1="141"
+                y1="71"
+                x2="175"
+                y2="81"
+                stroke="#FFFFFF"
+                strokeWidth="0.75"
+                opacity="0.85"
+              />
+            </g>
+
+            {/* Subtle Alignment Glint on Roof Line */}
+            <circle
+              cx="160"
+              cy="78"
+              r="1.5"
+              fill="#FFE082"
+              className="animate-ping opacity-75"
+              style={{ animationDuration: "2.2s" }}
+            />
+          </svg>
+
+          {/* Keyframe animation for subtle roofer shingle placement */}
+          <style>{`
+            @keyframes shingleAction {
+              0%, 100% {
+                transform: translate(0, 0);
+              }
+              50% {
+                transform: translate(1.5px, -2.5px);
+              }
+            }
+            .animate-shingle-action {
+              animation: shingleAction 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+              transform-origin: 116px 59px;
+            }
+          `}</style>
+        </div>
+
+        {/* C. Thin Gold Loading Line (0% to 100% over ~2.2s) */}
+        <div className="w-52 sm:w-60 h-[2px] sm:h-[2.5px] bg-white/10 rounded-full overflow-hidden mt-6 relative shadow-inner">
+          <div
+            className="h-full bg-gradient-to-r from-[#F5BF3C] to-[#FFE082] rounded-full transition-all duration-[2200ms] ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_0_8px_rgba(245,191,60,0.6)]"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+
+        {/* D. Roofing-Themed Loading Text */}
+        <div className="mt-3.5 text-center select-none">
+          <span className="font-display text-[0.68rem] sm:text-xs font-bold uppercase tracking-[0.28em] text-[#F5BF3C] drop-shadow-[0_0_8px_rgba(245,191,60,0.3)]">
+            PREPARING YOUR ROOF...
           </span>
         </div>
       </div>
