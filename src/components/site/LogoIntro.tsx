@@ -8,32 +8,20 @@ interface LogoIntroProps {
 }
 
 /**
- * Authentic Diamond Emblem Assembly & Cinematic Split Transition
+ * Premium Cinematic Brand Reveal for Diamond Roof Repair & Handyman Services
  * 
  * Sequence:
- * 1. 0.0s - 0.65s: Left and Right roof slopes glide smoothly from opposite sides and lock at center ridge.
- * 2. 0.65s - 0.95s: Metallic light sweep glides across the joined roof apex.
- * 3. 0.95s - 1.35s: "DIAMOND" silver wordmark reveals upward.
- * 4. 1.20s - 1.55s: "ROOF REPAIR" gold wordmark reveals.
- * 5. 1.40s - 1.75s: "& HANDYMAN SERVICES" reveals.
- * 6. 1.75s - 2.10s: Assembled logo holds in pristine architectural stillness.
- * 7. 2.10s - 2.75s: Dark split panels glide outward to reveal the cinematic hero.
- * 
- * Guaranteed Single-Run:
- * - Empty dependency array and hasStartedRef ensure it executes strictly ONCE without restarting.
- * - No "Skip Intro" text clutter on screen.
+ * 1. 0.0s – 0.4s: Full-screen deep navy canvas (#071525) with subtle cinematic vignette.
+ * 2. 0.4s – 1.1s: Restrained architectural roofline draws smoothly from left to right in warm gold.
+ * 3. 0.8s – 1.5s: Soft warm-gold light sweep travels across the roofline.
+ * 4. 1.1s – 1.9s: Existing Diamond logo smoothly fades in at center with gentle scale (96% -> 100%).
+ * 5. 1.6s – 2.1s: Brand wordmark reveals under logo ("DIAMOND ROOF REPAIR" & "BRAMPTON • ONTARIO").
+ * 6. 2.1s – 2.8s: Two cinematic dark panels separate outward from center, revealing the roofing hero.
+ * 7. 2.8s+: Complete handoff to the live website.
  */
 export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
-  const [phase, setPhase] = useState<
-    | "initial"
-    | "entering"
-    | "locked"
-    | "diamond"
-    | "roof"
-    | "handyman"
-    | "hold"
-    | "split"
-    | "done"
+  const [stage, setStage] = useState<
+    "initial" | "roofline" | "sweep" | "logo" | "text" | "split" | "done"
   >("initial");
 
   const onCompleteRef = useRef(onComplete);
@@ -49,33 +37,42 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
 
     // Check for reduced motion
     const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
+      "(prefers-reduced-motion: reduce)"
     ).matches;
 
     if (prefersReducedMotion) {
-      setPhase("split");
+      setStage("split");
       onSplitStartRef.current?.();
       const t = setTimeout(() => {
-        setPhase("done");
+        setStage("done");
         onCompleteRef.current?.();
-      }, 350);
+      }, 300);
       return () => clearTimeout(t);
     }
 
-    const t1 = setTimeout(() => setPhase("entering"), 80);
-    const t2 = setTimeout(() => setPhase("locked"), 650);
-    const t3 = setTimeout(() => setPhase("diamond"), 950);
-    const t4 = setTimeout(() => setPhase("roof"), 1200);
-    const t5 = setTimeout(() => setPhase("handyman"), 1400);
-    const t6 = setTimeout(() => setPhase("hold"), 1750);
-    const t7 = setTimeout(() => {
-      setPhase("split");
+    // Step 2: Roofline draw begins at 0.4s
+    const t1 = setTimeout(() => setStage("roofline"), 400);
+
+    // Step 3: Gold light sweep begins at 0.8s
+    const t2 = setTimeout(() => setStage("sweep"), 800);
+
+    // Step 4: Existing Diamond logo reveal begins at 1.1s
+    const t3 = setTimeout(() => setStage("logo"), 1100);
+
+    // Step 5: Brand text reveal under logo at 1.6s
+    const t4 = setTimeout(() => setStage("text"), 1600);
+
+    // Step 6: Cinematic dark curtain split begins at 2.1s
+    const t5 = setTimeout(() => {
+      setStage("split");
       onSplitStartRef.current?.();
     }, 2100);
-    const t8 = setTimeout(() => {
-      setPhase("done");
+
+    // Step 7: Complete handoff at 2.8s
+    const t6 = setTimeout(() => {
+      setStage("done");
       onCompleteRef.current?.();
-    }, 2750);
+    }, 2800);
 
     return () => {
       clearTimeout(t1);
@@ -84,48 +81,33 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
       clearTimeout(t4);
       clearTimeout(t5);
       clearTimeout(t6);
-      clearTimeout(t7);
-      clearTimeout(t8);
     };
   }, []);
 
-  if (phase === "done") {
+  if (stage === "done") {
     return null;
   }
 
   // Allow clicking anywhere to immediately skip to hero
   const handleQuickSkip = () => {
-    setPhase("split");
+    setStage("split");
     onSplitStartRef.current?.();
     setTimeout(() => {
-      setPhase("done");
+      setStage("done");
       onCompleteRef.current?.();
     }, 250);
   };
 
-  const isEntering = phase !== "initial";
-  const isLocked =
-    phase === "locked" ||
-    phase === "diamond" ||
-    phase === "roof" ||
-    phase === "handyman" ||
-    phase === "hold" ||
-    phase === "split";
-  const showDiamond =
-    phase === "diamond" ||
-    phase === "roof" ||
-    phase === "handyman" ||
-    phase === "hold" ||
-    phase === "split";
-  const showRoof =
-    phase === "roof" ||
-    phase === "handyman" ||
-    phase === "hold" ||
-    phase === "split";
-  const showHandyman =
-    phase === "handyman" || phase === "hold" || phase === "split";
-  const isHolding = phase === "hold" || phase === "split";
-  const isSplitting = phase === "split";
+  const isRoofDrawn = stage !== "initial";
+  const isSweeping =
+    stage === "sweep" ||
+    stage === "logo" ||
+    stage === "text" ||
+    stage === "split";
+  const isLogoVisible =
+    stage === "logo" || stage === "text" || stage === "split";
+  const isTextVisible = stage === "text" || stage === "split";
+  const isSplitting = stage === "split";
 
   return (
     <div
@@ -138,175 +120,157 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
       )}
     >
       {/* =========================================================================
-          LEFT DARK NAVY PANEL
-          Slides from 0 to -100% during the split transition
+          1. CINEMATIC DARK CURTAINS (Split outward at 2.1s)
          ========================================================================= */}
+      {/* Left Dark Navy Panel */}
       <div
         className={cn(
-          "absolute top-0 bottom-0 left-0 w-1/2 bg-[#071525] shadow-[24px_0_48px_rgba(3,10,18,0.85)] z-20 transition-transform ease-[cubic-bezier(0.77,0,0.175,1)]",
-          isSplitting ? "-translate-x-full duration-800" : "translate-x-0 duration-0"
+          "absolute top-0 bottom-0 left-0 w-1/2 bg-[#071525] shadow-[28px_0_56px_rgba(2,8,16,0.95)] z-20 transition-transform ease-[cubic-bezier(0.77,0,0.175,1)]",
+          isSplitting
+            ? "-translate-x-full duration-700"
+            : "translate-x-0 duration-0"
         )}
       >
-        <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/30 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30 pointer-events-none" />
+      </div>
+
+      {/* Right Dark Navy Panel */}
+      <div
+        className={cn(
+          "absolute top-0 bottom-0 right-0 w-1/2 bg-[#071525] shadow-[-28px_0_56px_rgba(2,8,16,0.95)] z-20 transition-transform ease-[cubic-bezier(0.77,0,0.175,1)]",
+          isSplitting
+            ? "translate-x-full duration-700"
+            : "translate-x-0 duration-0"
+        )}
+      >
+        <div className="absolute inset-0 bg-gradient-to-l from-black/50 via-transparent to-black/30 pointer-events-none" />
       </div>
 
       {/* =========================================================================
-          RIGHT DARK NAVY PANEL
-          Slides from 0 to +100% during the split transition
+          2. CENTER BRAND STAGE (z-30)
          ========================================================================= */}
       <div
         className={cn(
-          "absolute top-0 bottom-0 right-0 w-1/2 bg-[#071525] shadow-[-24px_0_48px_rgba(3,10,18,0.85)] z-20 transition-transform ease-[cubic-bezier(0.77,0,0.175,1)]",
-          isSplitting ? "translate-x-full duration-800" : "translate-x-0 duration-0"
+          "absolute inset-0 z-30 flex flex-col items-center justify-center px-4 transition-all duration-400 ease-out",
+          isSplitting ? "opacity-0 scale-[1.02]" : "opacity-100 scale-100"
         )}
       >
-        <div className="absolute inset-0 bg-gradient-to-l from-black/40 via-transparent to-black/30 pointer-events-none" />
-      </div>
-
-      {/* =========================================================================
-          CENTER LOGO COMPOSITION CANVAS (z-30)
-         ========================================================================= */}
-      <div
-        className={cn(
-          "absolute inset-0 z-30 flex items-center justify-center transition-all duration-400 ease-out",
-          isSplitting ? "opacity-0 scale-[1.03]" : "opacity-100 scale-100"
-        )}
-      >
-        {/* Subtle Ambient Radial Spotlight behind logo */}
+        {/* Subtle Ambient Radial Vignette & Gold Spotlight */}
         <div
-          className="absolute w-[450px] sm:w-[650px] h-[350px] rounded-full pointer-events-none opacity-40 blur-3xl"
+          className={cn(
+            "absolute w-[360px] sm:w-[580px] h-[360px] sm:h-[460px] rounded-full pointer-events-none transition-opacity duration-700 blur-3xl",
+            isLogoVisible ? "opacity-35" : "opacity-0"
+          )}
           style={{
             background:
               "radial-gradient(circle, rgba(245, 191, 60, 0.22) 0%, rgba(7, 21, 37, 0) 70%)",
           }}
         />
 
-        {/* Main Logo Composition Canvas */}
-        <div className="relative w-[280px] sm:w-[420px] md:w-[480px] lg:w-[540px] aspect-[1024/409] flex items-center justify-center px-4">
-          {/* 1. UPPER EMBLEM: LEFT ROOF SECTION */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              isLocked
-                ? "translate-x-0 opacity-100"
-                : isEntering
-                  ? "-translate-x-2 sm:-translate-x-3 opacity-90"
-                  : "-translate-x-12 sm:-translate-x-20 opacity-0"
-            )}
-            style={{
-              clipPath: "inset(0% 50% 49% 0%)",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
-            />
-          </div>
-
-          {/* 2. UPPER EMBLEM: RIGHT ROOF SECTION */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              isLocked
-                ? "translate-x-0 opacity-100"
-                : isEntering
-                  ? "translate-x-2 sm:translate-x-3 opacity-90"
-                  : "translate-x-12 sm:translate-x-20 opacity-0"
-            )}
-            style={{
-              clipPath: "inset(0% 0% 49% 50%)",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-contain filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.5)]"
-            />
-          </div>
-
-          {/* 3. CENTER LOCK METALLIC LIGHT SWEEP */}
-          {isLocked && !isHolding && (
-            <div
-              className="absolute inset-0 pointer-events-none overflow-hidden"
-              style={{ clipPath: "inset(0% 0% 49% 0%)" }}
+        {/* Brand Stage Container */}
+        <div className="relative flex flex-col items-center justify-center">
+          {/* =========================================================================
+              A. SUBTLE ARCHITECTURAL ROOFLINE DRAW (0.4s - 1.1s)
+             ========================================================================= */}
+          <div className="relative w-[280px] sm:w-[380px] md:w-[440px] h-[64px] sm:h-[84px] flex items-center justify-center overflow-visible">
+            <svg
+              viewBox="0 0 440 84"
+              className="w-full h-full overflow-visible"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent -skew-x-25 animate-light-sweep" />
-            </div>
-          )}
+              <defs>
+                <linearGradient id="introGoldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#F5BF3C" stopOpacity="0.3" />
+                  <stop offset="50%" stopColor="#F5BF3C" stopOpacity="1" />
+                  <stop offset="100%" stopColor="#F5BF3C" stopOpacity="0.3" />
+                </linearGradient>
+              </defs>
 
-          {/* 4. MAIN WORDMARK: "DIAMOND" */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              showDiamond
-                ? "translate-y-0 opacity-100 scale-100"
-                : "translate-y-4 opacity-0 scale-[0.98]"
+              {/* Outer Roof Peak Silhouette: draws left to right */}
+              <path
+                d="M 30 76 L 80 76 L 220 12 L 360 76 L 410 76"
+                stroke="url(#introGoldGrad)"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="filter drop-shadow-[0_0_8px_rgba(245,191,60,0.35)]"
+                style={{
+                  strokeDasharray: 480,
+                  strokeDashoffset: isRoofDrawn ? 0 : 480,
+                  transition: "stroke-dashoffset 0.7s cubic-bezier(0.25, 1, 0.5, 1)",
+                }}
+              />
+
+              {/* Inner Architectural Rafter Line */}
+              <path
+                d="M 130 76 L 220 36 L 310 76"
+                stroke="#F5BF3C"
+                strokeWidth="1"
+                strokeOpacity="0.45"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{
+                  strokeDasharray: 240,
+                  strokeDashoffset: isRoofDrawn ? 0 : 240,
+                  transition:
+                    "stroke-dashoffset 0.6s cubic-bezier(0.25, 1, 0.5, 1) 0.12s",
+                }}
+              />
+            </svg>
+
+            {/* B. GOLD LIGHT SWEEP (0.8s - 1.5s): travels across the drawn roofline */}
+            {isSweeping && (
+              <div
+                className="absolute inset-0 pointer-events-none overflow-hidden"
+                style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)" }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent -skew-x-25 animate-light-sweep" />
+              </div>
             )}
-            style={{
-              clipPath: "inset(49% 0% 26.5% 0%)",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-contain filter drop-shadow-[0_4px_14px_rgba(0,0,0,0.6)]"
-            />
           </div>
 
-          {/* 5. SECOND WORDMARK: "ROOF REPAIR" */}
+          {/* =========================================================================
+              C. EXISTING DIAMOND LOGO REVEAL (1.1s - 1.9s)
+              Smooth fade in + scale 96% to 100%
+             ========================================================================= */}
           <div
             className={cn(
-              "absolute inset-0 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              showRoof
-                ? "translate-y-0 opacity-100 scale-100"
-                : "translate-y-3.5 opacity-0 scale-[0.99]"
+              "relative transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] mt-1 sm:mt-2",
+              isLogoVisible
+                ? "opacity-100 scale-100 translate-y-0"
+                : "opacity-0 scale-[0.96] translate-y-2"
             )}
-            style={{
-              clipPath: "inset(72% 0% 13.5% 0%)",
-            }}
-          >
-            <img
-              src={logoImg}
-              alt=""
-              aria-hidden="true"
-              className="w-full h-full object-contain filter drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
-            />
-          </div>
-
-          {/* 6. SUBTITLE: "& HANDYMAN SERVICES" */}
-          <div
-            className={cn(
-              "absolute inset-0 transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              showHandyman
-                ? "translate-y-0 opacity-100"
-                : "translate-y-2.5 opacity-0"
-            )}
-            style={{
-              clipPath: "inset(85% 0% 0% 0%)",
-            }}
           >
             <img
               src={logoImg}
               alt="Diamond Roof Repair & Handyman Services"
-              className="w-full h-full object-contain"
+              className="w-auto h-20 sm:h-28 md:h-32 object-contain filter drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]"
+              loading="eager"
             />
           </div>
 
-          {/* 7. COMPLETE ASSEMBLED LOGO HOLD WITH SUBTLE METALLIC SHEEN */}
-          {isHolding && (
-            <div className="absolute inset-0 pointer-events-none">
-              <img
-                src={logoImg}
-                alt="Diamond Roof Repair & Handyman Services"
-                className="w-full h-full object-contain filter drop-shadow-[0_6px_20px_rgba(0,0,0,0.6)]"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -skew-x-20 animate-light-sweep-slow pointer-events-none" />
+          {/* =========================================================================
+              D. BRAND TEXT REVEAL (1.6s - 2.1s)
+              Under the logo:
+              "DIAMOND ROOF REPAIR"
+              "BRAMPTON • ONTARIO"
+             ========================================================================= */}
+          <div
+            className={cn(
+              "mt-3 sm:mt-4 text-center transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              isTextVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-1.5"
+            )}
+          >
+            <div className="font-display text-xs sm:text-sm font-extrabold tracking-[0.26em] sm:tracking-[0.32em] text-white uppercase drop-shadow-sm">
+              DIAMOND ROOF REPAIR
             </div>
-          )}
+            <div className="font-display text-[0.62rem] sm:text-[0.72rem] font-bold tracking-[0.32em] sm:tracking-[0.4em] text-[#F5BF3C] uppercase mt-1 sm:mt-1.5">
+              BRAMPTON • ONTARIO
+            </div>
+          </div>
         </div>
       </div>
     </div>
