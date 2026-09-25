@@ -8,26 +8,27 @@ interface LogoIntroProps {
 }
 
 /**
- * Minimal Cinematic Brand Reveal for Diamond Roof Repair & Handyman Services
+ * Cinematic Brand Reveal for Diamond Roof Repair & Handyman Services
  * 
- * Sequence & Timing:
- * 0.0s – 0.3s: Clean deep navy canvas (#071525) with soft ambient vignette.
- * 0.3s – 1.1s: Diamond logo SYMBOL pops in smoothly (scale 88% -> 100%, opacity 0 -> 1) with restrained gold glow.
- * 0.9s – 1.5s: Subtle cinematic light wave gently flows underneath the symbol.
- * 1.2s – 1.9s: Brand text gently appears with subtle upward drift.
- * 1.9s – 2.6s: Pristine architectural hold in calm stillness (~0.7s).
- * 2.6s – 3.1s: Pure smooth cinematic fade / dissolve directly into the live hero.
+ * Exact 7-Phase Sequence:
+ * 1. 0.0s – 0.4s: Dark Cinematic Background (Deep navy #040B14 + subtle ambient center warm gold light at 0.15s).
+ * 2. 0.4s – 1.1s: Diamond Symbol Pop-Up (Starts at 88% scale, 0 opacity -> 100% scale, 1 opacity, cubic-bezier, warm rim light).
+ * 3. 0.9s – 1.6s: Cinematic Light Wave (Golden energy sweep expands outward horizontally underneath the diamond).
+ * 4. 1.0s – 1.7s: Roof / House Formation (Emerges from golden light wave into solid/metallic roof silhouette under the diamond).
+ * 5. 1.5s – 2.3s: Brand Text Reveal (Typography reveals from center outward: DIAMOND ROOF REPAIR & HANDYMAN SERVICES + BRAMPTON • ONTARIO).
+ * 6. 2.3s – 2.8s: Complete Logo Composition Holds (~0.5s hold with subtle cinematic gold aura).
+ * 7. 2.8s – 3.2s: Smooth Cinematic Dissolve into the preloaded hero section.
  * 
- * Strict Rules:
- * - NO left/right wipe.
- * - NO curtain animation.
- * - NO sliding the website in.
- * - Pure, smooth opacity fade into the preloaded hero video/poster.
+ * Total runtime: ~3.25 seconds.
  */
 export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
-  const [showSymbol, setShowSymbol] = useState(false);
+  const [showAmbientGlow, setShowAmbientGlow] = useState(false);
+  const [showDiamond, setShowDiamond] = useState(false);
   const [showWave, setShowWave] = useState(false);
+  const [showRoofGlow, setShowRoofGlow] = useState(false);
+  const [showRoofSolid, setShowRoofSolid] = useState(false);
   const [showText, setShowText] = useState(false);
+  const [showHoldGlow, setShowHoldGlow] = useState(false);
   const [isExiting, setIsExiting] = useState(false);
   const [isDone, setIsDone] = useState(false);
 
@@ -42,7 +43,7 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
     if (hasStartedRef.current) return;
     hasStartedRef.current = true;
 
-    // Check for reduced motion
+    // Check for prefers-reduced-motion accessibility
     const prefersReducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     ).matches;
@@ -53,37 +54,51 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
       const t = setTimeout(() => {
         setIsDone(true);
         onCompleteRef.current?.();
-      }, 250);
+      }, 200);
       return () => clearTimeout(t);
     }
 
-    // 0.3s: Diamond symbol smoothly pops in
-    const t1 = setTimeout(() => setShowSymbol(true), 300);
+    // 1. 0.15s: Subtle warm-gold ambient light source begins appearing in the center
+    const t0 = setTimeout(() => setShowAmbientGlow(true), 150);
 
-    // 0.9s: Subtle cinematic light wave appears underneath symbol
+    // 2. 0.4s: Diamond symbol smoothly pops up (scale 88% -> 100%, opacity 0 -> 1)
+    const t1 = setTimeout(() => setShowDiamond(true), 400);
+
+    // 3. 0.9s: Cinematic golden light wave sweeps horizontally underneath the diamond
     const t2 = setTimeout(() => setShowWave(true), 900);
 
-    // 1.2s: Brand text gently appears underneath
-    const t3 = setTimeout(() => setShowText(true), 1200);
+    // 4. 1.0s: Roof/house shape emerges from the golden wave
+    const t3 = setTimeout(() => setShowRoofGlow(true), 1000);
+    const t3b = setTimeout(() => setShowRoofSolid(true), 1280);
 
-    // 2.6s: Begin smooth cinematic fade / dissolve into hero
-    const t4 = setTimeout(() => {
+    // 5. 1.5s: Brand typography reveals from center outward
+    const t4 = setTimeout(() => setShowText(true), 1500);
+
+    // 6. 2.3s: Complete unified logo holds with subtle warm glow
+    const t5 = setTimeout(() => setShowHoldGlow(true), 2300);
+
+    // 7. 2.8s: Smooth cinematic dissolve into the live hero
+    const t6 = setTimeout(() => {
       setIsExiting(true);
       onSplitStartRef.current?.();
-    }, 2600);
+    }, 2800);
 
-    // 3.1s: Complete handoff and unmount intro
-    const t5 = setTimeout(() => {
+    // Complete handoff and clean unmount at 3.25s
+    const t7 = setTimeout(() => {
       setIsDone(true);
       onCompleteRef.current?.();
-    }, 3100);
+    }, 3250);
 
     return () => {
+      clearTimeout(t0);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
+      clearTimeout(t3b);
       clearTimeout(t4);
       clearTimeout(t5);
+      clearTimeout(t6);
+      clearTimeout(t7);
     };
   }, []);
 
@@ -91,14 +106,14 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
     return null;
   }
 
-  // Click anywhere to immediately dissolve into the hero
+  // Quick skip on user click or keypress
   const handleQuickSkip = () => {
     setIsExiting(true);
     onSplitStartRef.current?.();
     setTimeout(() => {
       setIsDone(true);
       onCompleteRef.current?.();
-    }, 250);
+    }, 200);
   };
 
   return (
@@ -107,110 +122,227 @@ export function LogoIntro({ onComplete, onSplitStart }: LogoIntroProps) {
       aria-label="Diamond Roof Repair brand reveal"
       onClick={handleQuickSkip}
       className={cn(
-        "fixed inset-0 z-[100] select-none flex items-center justify-center bg-[#071525] cursor-default transition-opacity duration-500 ease-out",
+        "fixed inset-0 z-[100] select-none flex items-center justify-center bg-[#040B14] cursor-default transition-opacity duration-450 ease-out",
         isExiting ? "opacity-0 pointer-events-none" : "opacity-100"
       )}
     >
-      {/* 1. Subtle Dark Vignette Backdrop */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_40%,rgba(3,10,18,0.75)_100%)] pointer-events-none" />
+      {/* 1. Cinematic Atmospheric Dark Vignette */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(7,21,37,0.45)_0%,rgba(2,6,12,0.95)_100%)] pointer-events-none" />
 
-      {/* 2. Soft Golden Spotlight behind symbol (extremely restrained) */}
+      {/* 2. Soft Golden Center Spotlight (Restrained & Warm) */}
       <div
         className={cn(
-          "absolute w-[320px] sm:w-[480px] h-[320px] sm:h-[480px] rounded-full pointer-events-none transition-opacity duration-1000 blur-3xl",
-          showSymbol ? "opacity-20" : "opacity-0"
+          "absolute w-[360px] sm:w-[500px] h-[360px] sm:h-[500px] rounded-full pointer-events-none transition-opacity duration-1000 blur-3xl will-change-transform",
+          showAmbientGlow ? "opacity-25" : "opacity-0"
         )}
         style={{
           background:
-            "radial-gradient(circle, rgba(245, 191, 60, 0.25) 0%, rgba(7, 21, 37, 0) 70%)",
+            "radial-gradient(circle, rgba(245, 191, 60, 0.35) 0%, rgba(7, 21, 37, 0) 70%)",
+        }}
+      />
+
+      {/* Ambient Hold Glow behind Full Logo */}
+      <div
+        className={cn(
+          "absolute w-[440px] sm:w-[620px] h-[220px] sm:h-[300px] rounded-full pointer-events-none transition-opacity duration-700 blur-2xl will-change-transform",
+          showHoldGlow ? "opacity-35" : "opacity-0"
+        )}
+        style={{
+          background:
+            "radial-gradient(ellipse, rgba(245, 191, 60, 0.4) 0%, rgba(7, 21, 37, 0) 75%)",
         }}
       />
 
       {/* 3. Center Brand Composition */}
-      <div className="relative z-10 flex flex-col items-center justify-center px-4 max-w-lg w-full">
-        {/* A. DIAMOND LOGO SYMBOL POP-UP (0.3s - 1.1s) */}
+      <div className="relative z-10 flex flex-col items-center justify-center px-4 w-full max-w-lg">
+        {/* Unified Logo Canvas: Exact aspect ratio matching the authentic 1024x409 asset */}
         <div
-          className={cn(
-            "relative transition-all duration-800 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform flex items-center justify-center",
-            showSymbol
-              ? "opacity-100 scale-100 translate-y-0"
-              : "opacity-0 scale-[0.88] translate-y-2"
-          )}
+          className="relative w-[310px] sm:w-[410px] md:w-[460px] will-change-transform"
+          style={{ aspectRatio: "1024 / 409" }}
         >
-          {/* Isolated Emblem Symbol (Top half of Diamond Logo: Diamond + Roof Slopes) */}
+          {/* ==========================================================
+              PHASE 2: DIAMOND SYMBOL POP-UP (0.4s – 1.1s)
+              Starts at 88% scale, 0 opacity.
+              Emerges forward smoothly to 100% scale and opacity with
+              a subtle warm-gold rim light.
+              ========================================================== */}
           <div
-            className="relative overflow-hidden w-[180px] sm:w-[240px] md:w-[270px] flex items-start justify-center"
-            style={{ aspectRatio: "1024 / 200" }}
+            className={cn(
+              "absolute inset-0 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform pointer-events-none",
+              showDiamond
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-[0.88]"
+            )}
+            style={{
+              clipPath: "polygon(36% 0%, 64% 0%, 64% 28.5%, 36% 28.5%)",
+              filter: showDiamond
+                ? "drop-shadow(0 0 14px rgba(245, 191, 60, 0.45)) drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5))"
+                : "none",
+            }}
           >
             <img
               src={logoImg}
-              alt="Diamond Roof Repair Emblem"
-              className="w-full h-auto object-cover object-top filter drop-shadow-[0_4px_16px_rgba(0,0,0,0.55)] pointer-events-none"
+              alt="Diamond Symbol"
+              className="w-full h-full object-contain pointer-events-none"
+              loading="eager"
+            />
+          </div>
+
+          {/* ==========================================================
+              PHASE 3: CINEMATIC LIGHT WAVE (0.9s – 1.6s)
+              Elegant horizontal energy sweep underneath the Diamond.
+              Expands smoothly outward with soft golden edges and slight blur.
+              ========================================================== */}
+          <div
+            className={cn(
+              "pointer-events-none absolute left-1/2 -translate-x-1/2 w-[72%] max-w-[340px] h-4 z-20 flex items-center justify-center transition-all duration-700 ease-out will-change-transform",
+              showWave
+                ? "opacity-100 scale-x-100"
+                : "opacity-0 scale-x-0"
+            )}
+            style={{
+              top: "27.2%",
+              transformOrigin: "center center",
+            }}
+          >
+            {/* Soft Warm-Gold Ambient Glow Ribbon */}
+            <div className="absolute inset-x-2 h-3 bg-gradient-to-r from-transparent via-[#F5BF3C]/45 to-transparent blur-md" />
+
+            {/* Luminous Energy Sweep Trail */}
+            <svg
+              viewBox="0 0 340 18"
+              className="w-full h-full overflow-visible"
+              fill="none"
+            >
+              <defs>
+                <linearGradient id="goldLightSweep" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#F5BF3C" stopOpacity="0" />
+                  <stop offset="20%" stopColor="#F5BF3C" stopOpacity="0.4" />
+                  <stop offset="50%" stopColor="#FFF2B2" stopOpacity="0.95" />
+                  <stop offset="80%" stopColor="#F5BF3C" stopOpacity="0.4" />
+                  <stop offset="100%" stopColor="#F5BF3C" stopOpacity="0" />
+                </linearGradient>
+                <filter id="softTrailGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="1.5" result="blur" />
+                  <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                </filter>
+              </defs>
+
+              {/* Main Golden Energy Filament */}
+              <path
+                d="M 5 9 Q 85 5, 170 9 T 335 9"
+                stroke="url(#goldLightSweep)"
+                strokeWidth="1.75"
+                strokeLinecap="round"
+                filter="url(#softTrailGlow)"
+              />
+              {/* Secondary delicate harmonic filament */}
+              <path
+                d="M 30 9 Q 100 12, 170 9 T 310 9"
+                stroke="url(#goldLightSweep)"
+                strokeWidth="0.8"
+                strokeLinecap="round"
+                opacity="0.6"
+              />
+            </svg>
+          </div>
+
+          {/* ==========================================================
+              PHASE 4: ROOF / HOUSE FORMATION (1.0s – 1.7s)
+              Emerges smoothly from the golden light wave directly underneath
+              the Diamond. Starts as a soft golden light shape, then solidifies
+              into the clean solid/metallic roof silhouette and chimney.
+              ========================================================== */}
+          {/* 4A. Luminous Golden Light Roof (Soft glow emerging from wave) */}
+          <div
+            className={cn(
+              "absolute inset-0 pointer-events-none transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform",
+              showRoofGlow
+                ? (showRoofSolid ? "opacity-20 scale-100" : "opacity-85 scale-100")
+                : "opacity-0 scale-[0.96]"
+            )}
+            style={{
+              clipPath: "polygon(14% 24%, 86% 24%, 86% 48.5%, 14% 48.5%)",
+              filter: "brightness(1.5) saturate(1.8) drop-shadow(0 0 16px rgba(245, 191, 60, 0.85))",
+            }}
+          >
+            <img
+              src={logoImg}
+              alt=""
+              className="w-full h-full object-contain pointer-events-none"
+              loading="eager"
+            />
+          </div>
+
+          {/* 4B. Solid Metallic Roof Silhouette (Solidifies & connects with Diamond) */}
+          <div
+            className={cn(
+              "absolute inset-0 transition-all duration-600 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform pointer-events-none",
+              showRoofSolid
+                ? "opacity-100 scale-100"
+                : "opacity-0 scale-[0.97]"
+            )}
+            style={{
+              clipPath: "polygon(14% 24%, 86% 24%, 86% 48.5%, 14% 48.5%)",
+              filter: showRoofSolid
+                ? "drop-shadow(0 2px 10px rgba(0, 0, 0, 0.4))"
+                : "none",
+            }}
+          >
+            <img
+              src={logoImg}
+              alt="Roof Silhouette"
+              className="w-full h-full object-contain pointer-events-none"
+              loading="eager"
+            />
+          </div>
+
+          {/* ==========================================================
+              PHASE 5: BRAND TEXT REVEAL (1.5s – 2.3s)
+              Typography reveals from the inside outward:
+              Starts slightly compressed toward the center with subtle upward lift,
+              then gently expands smoothly into full majestic alignment.
+              ========================================================== */}
+          <div
+            className={cn(
+              "absolute inset-0 transition-all duration-750 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform pointer-events-none",
+              showText
+                ? "opacity-100 scale-x-100 translate-y-0"
+                : "opacity-0 scale-x-[0.91] translate-y-2"
+            )}
+            style={{
+              clipPath: "polygon(0% 48.5%, 100% 48.5%, 100% 100%, 0% 100%)",
+              transformOrigin: "center top",
+              filter: showText
+                ? "drop-shadow(0 2px 12px rgba(0, 0, 0, 0.55))"
+                : "none",
+            }}
+          >
+            <img
+              src={logoImg}
+              alt="Diamond Roof Repair Brand Typography"
+              className="w-full h-full object-contain pointer-events-none"
               loading="eager"
             />
           </div>
         </div>
 
-        {/* B. CINEMATIC LIGHT WAVE (0.9s - 1.5s) */}
+        {/* Small Location Accent: BRAMPTON • ONTARIO
+            Reveals in harmony with the brand typography from center outward */}
         <div
           className={cn(
-            "relative w-[220px] sm:w-[280px] md:w-[320px] h-6 sm:h-7 flex items-center justify-center my-2 sm:my-3 transition-all duration-600 ease-out pointer-events-none",
-            showWave ? "opacity-100 scale-100" : "opacity-0 scale-95"
-          )}
-        >
-          {/* Ambient soft glow ribbon */}
-          <div className="absolute inset-x-6 h-2 sm:h-3 bg-gradient-to-r from-transparent via-[#F5BF3C]/22 to-transparent blur-md" />
-
-          {/* Gentle cinematic harmonic light wave */}
-          <svg
-            viewBox="0 0 320 28"
-            className="w-full h-full overflow-visible"
-            fill="none"
-          >
-            <defs>
-              <linearGradient id="softCinematicWave" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#F5BF3C" stopOpacity="0" />
-                <stop offset="25%" stopColor="#F5BF3C" stopOpacity="0.3" />
-                <stop offset="50%" stopColor="#FFE082" stopOpacity="0.75" />
-                <stop offset="75%" stopColor="#F5BF3C" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#F5BF3C" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M 10 14 C 80 4, 120 24, 160 14 C 200 4, 240 24, 310 14"
-              stroke="url(#softCinematicWave)"
-              strokeWidth="1.25"
-              strokeLinecap="round"
-              className="filter drop-shadow-[0_0_6px_rgba(245,191,60,0.4)] animate-wave-drift"
-            />
-          </svg>
-        </div>
-
-        {/* C. BRAND TEXT REVEAL (1.2s - 1.9s) */}
-        <div
-          className={cn(
-            "text-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+            "mt-2 text-center transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] select-none will-change-transform",
             showText
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 translate-y-2"
+              ? "opacity-100 translate-y-0 tracking-[0.34em] sm:tracking-[0.40em]"
+              : "opacity-0 translate-y-2 tracking-[0.16em]"
           )}
         >
-          {/* Main Brand Text: Clean and Strong */}
-          <div className="font-display text-sm sm:text-base md:text-lg font-black tracking-[0.24em] sm:tracking-[0.28em] text-white uppercase drop-shadow-sm">
-            DIAMOND ROOF REPAIR
-          </div>
-
-          {/* Secondary Line: Smaller and Subtle */}
-          <div className="font-display text-[0.68rem] sm:text-xs md:text-sm font-bold tracking-[0.2em] sm:tracking-[0.24em] text-white/80 uppercase mt-1">
-            ROOFING &amp; HANDYMAN SERVICES
-          </div>
-
-          {/* Location Line: Restrained Warm Gold Accent */}
-          <div className="font-display text-[0.6rem] sm:text-[0.68rem] font-semibold tracking-[0.32em] sm:tracking-[0.38em] text-[#F5BF3C] uppercase mt-2">
+          <span className="font-display text-[0.65rem] sm:text-xs font-black uppercase text-[#F5BF3C] drop-shadow-[0_0_8px_rgba(245,191,60,0.35)]">
             BRAMPTON • ONTARIO
-          </div>
+          </span>
         </div>
       </div>
     </div>
   );
 }
+
