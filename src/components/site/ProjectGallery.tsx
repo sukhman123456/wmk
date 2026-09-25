@@ -62,29 +62,33 @@ export function ProjectGallery() {
     <section id="gallery" className="section-spacing bg-white border-b border-[#E2E8F0] scroll-mt-20">
       <div className="container-site">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 font-display text-xs sm:text-sm font-bold tracking-[0.2em] text-[#F5BF3C] uppercase mb-3">
-            <span className="h-0.5 w-6 bg-[#F5BF3C]" />
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-14">
+          <div className="inline-flex items-center gap-2 font-display text-xs sm:text-sm font-bold tracking-[0.2em] text-[#F5BF3C] uppercase mb-2 sm:mb-3">
+            <span className="h-0.5 w-5 sm:w-6 bg-[#F5BF3C]" />
             OUR WORK
-            <span className="h-0.5 w-6 bg-[#F5BF3C]" />
+            <span className="h-0.5 w-5 sm:w-6 bg-[#F5BF3C]" />
           </div>
 
-          <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.8rem)] font-extrabold tracking-[-0.03em] text-[#0B1B30] uppercase leading-[1.04]">
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-[2.6rem] font-extrabold tracking-tight text-[#0B1B30] uppercase leading-[1.08]">
             Project Gallery
           </h2>
 
-          <p className="mt-4 text-base sm:text-lg text-[#64748B] leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed max-w-2xl mx-auto px-2">
             A look at some of our recent roofing and handyman projects.
           </p>
+
+          <span className="sm:hidden mt-2 text-[0.68rem] font-display font-bold uppercase tracking-wider text-[#F5BF3C] inline-block">
+            Swipe to explore projects →
+          </span>
         </div>
 
-        {/* 5-Column Horizontal Project Gallery */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:gap-5">
+        {/* 5-Image Horizontal Swipe Carousel on Mobile, 5-Col Grid on Desktop */}
+        <div className="flex overflow-x-auto snap-x snap-mandatory gap-3.5 pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 sm:gap-4 lg:gap-5 no-scrollbar">
           {projects.map((item) => (
             <div
               key={item.id}
               onClick={() => setActiveImg(item.image)}
-              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-[#F5BF3C] flex flex-col justify-end h-64 sm:h-72"
+              className="group relative cursor-pointer overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-[#F5BF3C] flex flex-col justify-end h-64 sm:h-72 w-[78vw] shrink-0 sm:w-auto snap-center"
             >
               <img
                 src={item.image}

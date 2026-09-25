@@ -164,7 +164,7 @@ export function Hero({ isActive = true }: HeroProps) {
           {/* 2. Main Headline: Exactly matching reference blueprint */}
           <h1
             className={cn(
-              "mt-3 sm:mt-4 font-display text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] xl:text-[3.65rem] font-extrabold tracking-[-0.03em] text-white uppercase leading-[1.05] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "mt-2.5 sm:mt-4 font-display text-[1.75rem] sm:text-3xl md:text-4xl lg:text-[3.25rem] xl:text-[3.65rem] font-extrabold tracking-tight text-white uppercase leading-[1.08] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
               stage >= 2 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
             )}
           >
@@ -178,7 +178,7 @@ export function Hero({ isActive = true }: HeroProps) {
           {/* 3. Supporting Text */}
           <p
             className={cn(
-              "mt-5 max-w-xl text-base sm:text-lg text-white/90 font-normal leading-relaxed transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "mt-3.5 sm:mt-5 max-w-xl text-sm sm:text-base lg:text-lg text-white/90 font-normal leading-relaxed transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
               stage >= 3 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5"
             )}
           >
@@ -189,14 +189,14 @@ export function Hero({ isActive = true }: HeroProps) {
           {/* 4. Action Buttons (Primary CTA + Call Now) */}
           <div
             className={cn(
-              "mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "mt-6 sm:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
               stage >= 4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             )}
           >
             {/* Primary Action Button */}
             <a
               href="#contact"
-              className="inline-flex h-13 sm:h-14 items-center justify-center gap-3 rounded-lg bg-[#F5BF3C] px-8 font-display text-sm font-extrabold uppercase tracking-wider text-[#071525] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FFD45A] hover:shadow-[0_4px_24px_rgba(245,191,60,0.4)] active:translate-y-0 active:scale-95 shadow-md"
+              className="inline-flex h-12 sm:h-14 items-center justify-center gap-2.5 rounded-lg bg-[#F5BF3C] px-6 sm:px-8 font-display text-xs sm:text-sm font-extrabold uppercase tracking-wider text-[#071525] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FFD45A] hover:shadow-[0_4px_24px_rgba(245,191,60,0.4)] active:translate-y-0 active:scale-95 shadow-md"
             >
               <span>Get a Free Quote</span>
               <ArrowRight className="h-4 w-4" />
@@ -205,7 +205,7 @@ export function Hero({ isActive = true }: HeroProps) {
             {/* Secondary Option: Call Now */}
             <a
               href={business.phoneHref}
-              className="inline-flex h-13 sm:h-14 items-center justify-center gap-2.5 rounded-lg border border-white/30 bg-[#071525]/60 px-7 font-display text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all duration-200 hover:border-[#F5BF3C] hover:text-[#F5BF3C] hover:bg-[#071525]/85 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+              className="inline-flex h-12 sm:h-14 items-center justify-center gap-2.5 rounded-lg border border-white/30 bg-[#071525]/60 px-6 sm:px-7 font-display text-xs sm:text-sm font-bold uppercase tracking-wider text-white backdrop-blur-md transition-all duration-200 hover:border-[#F5BF3C] hover:text-[#F5BF3C] hover:bg-[#071525]/85 hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
             >
               <Phone className="h-4 w-4 text-[#F5BF3C]" />
               <span>Call Now</span>
@@ -215,7 +215,7 @@ export function Hero({ isActive = true }: HeroProps) {
           {/* 5. Trust Row below buttons */}
           <div
             className={cn(
-              "mt-10 sm:mt-12 pt-8 border-t border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-6 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
+              "mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-white/15 grid grid-cols-1 sm:grid-cols-3 gap-3.5 sm:gap-6 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)]",
               stage >= 4 ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
             )}
           >

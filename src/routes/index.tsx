@@ -15,7 +15,7 @@ import {
 import { Services } from "@/components/site/ServicesSection";
 import { ProjectGallery } from "@/components/site/ProjectGallery";
 import { QuoteModal } from "@/components/site/QuoteModal";
-import { Footer, MobileCallBar } from "@/components/site/Footer";
+import { Footer } from "@/components/site/Footer";
 import { business } from "@/lib/business";
 
 const title = "Diamond Roof Repair & Handyman Services | Brampton, ON";
@@ -151,9 +151,6 @@ function Index() {
 
       {/* 13. Footer (4-Column Dark Editorial Footer) */}
       <Footer />
-
-      {/* Mobile Sticky Thumb Action */}
-      <MobileCallBar />
 
       {/* Interactive Free Quote Modal */}
       <QuoteModal

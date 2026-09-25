@@ -745,18 +745,21 @@ export function Services() {
         {/* =========================================================================
             1. SECTION HEADER (Centered matching reference blueprint)
            ========================================================================= */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <div className="inline-flex items-center gap-2 font-display text-xs sm:text-sm font-bold tracking-[0.2em] text-[#F5BF3C] uppercase mb-3">
-            <span className="h-0.5 w-6 bg-[#F5BF3C]" />
+        {/* =========================================================================
+            1. SECTION HEADER (Centered matching reference blueprint)
+           ========================================================================= */}
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-14">
+          <div className="inline-flex items-center gap-2 font-display text-xs sm:text-sm font-bold tracking-[0.2em] text-[#F5BF3C] uppercase mb-2 sm:mb-3">
+            <span className="h-0.5 w-5 sm:w-6 bg-[#F5BF3C]" />
             OUR SERVICES
-            <span className="h-0.5 w-6 bg-[#F5BF3C]" />
+            <span className="h-0.5 w-5 sm:w-6 bg-[#F5BF3C]" />
           </div>
 
-          <h2 className="font-display text-[clamp(2.2rem,4.5vw,3.8rem)] font-extrabold tracking-[-0.03em] text-[#0B1B30] uppercase leading-[1.04]">
+          <h2 className="font-display text-2xl sm:text-3xl lg:text-[2.6rem] font-extrabold tracking-tight text-[#0B1B30] uppercase leading-[1.08]">
             Complete Roofing &amp; Handyman Solutions
           </h2>
 
-          <p className="mt-4 text-base sm:text-lg text-[#64748B] leading-relaxed max-w-2xl mx-auto">
+          <p className="mt-3 text-sm sm:text-base text-[#64748B] leading-relaxed max-w-2xl mx-auto px-2">
             We offer a full range of roofing and handyman services to protect and improve your home or business. No job is too big or too small.
           </p>
         </div>
@@ -764,7 +767,7 @@ export function Services() {
         {/* =========================================================================
             2. 4-COLUMN SERVICE CARD GRID (8 Featured Blueprint Services)
            ========================================================================= */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {blueprintServices.map((service) => {
             const Icon = service.icon;
             // Find corresponding full service item for modal
@@ -779,7 +782,7 @@ export function Services() {
                 className="group relative cursor-pointer overflow-hidden rounded-2xl border border-[#E2E8F0] bg-white flex flex-col justify-between shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:border-[#F5BF3C]"
               >
                 {/* Image Banner */}
-                <div className="relative h-44 w-full overflow-hidden bg-[#071525]">
+                <div className="relative h-40 sm:h-44 w-full overflow-hidden bg-[#071525]">
                   <img
                     src={service.image}
                     alt={service.name}
@@ -789,25 +792,25 @@ export function Services() {
                   <div className="absolute inset-0 bg-gradient-to-t from-[#071525]/85 via-black/20 to-black/30" />
 
                   {/* Floating Icon Badge */}
-                  <div className="absolute bottom-3 left-4">
-                    <div className="grid h-10 w-10 place-items-center rounded-xl bg-white shadow-md border border-[#E2E8F0] text-[#F5BF3C] transition-all duration-200 group-hover:bg-[#F5BF3C] group-hover:text-[#071525] group-hover:scale-105">
-                      <Icon className="h-5 w-5" />
+                  <div className="absolute bottom-2.5 left-3 sm:bottom-3 sm:left-4">
+                    <div className="grid h-9 w-9 sm:h-10 sm:w-10 place-items-center rounded-xl bg-white shadow-md border border-[#E2E8F0] text-[#F5BF3C] transition-all duration-200 group-hover:bg-[#F5BF3C] group-hover:text-[#071525] group-hover:scale-105">
+                      <Icon className="h-4 w-4 sm:h-5 sm:w-5" />
                     </div>
                   </div>
                 </div>
 
                 {/* Card Text Content */}
-                <div className="p-5 sm:p-6 flex flex-col justify-between flex-1">
+                <div className="p-4 sm:p-5 flex flex-col justify-between flex-1">
                   <div>
                     <h3 className="font-display text-base sm:text-lg font-bold uppercase tracking-tight text-[#0B1B30] group-hover:text-[#F5BF3C] transition-colors">
                       {service.name}
                     </h3>
-                    <p className="mt-2 text-xs sm:text-sm text-[#64748B] leading-relaxed line-clamp-2">
+                    <p className="mt-1.5 text-xs sm:text-sm text-[#64748B] leading-relaxed line-clamp-2">
                       {service.shortDesc}
                     </p>
                   </div>
 
-                  <div className="mt-5 pt-4 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-display font-bold tracking-wider uppercase text-[#0B1B30] group-hover:text-[#F5BF3C] transition-colors">
+                  <div className="mt-4 pt-3 border-t border-[#E2E8F0] flex items-center justify-between text-xs font-display font-bold tracking-wider uppercase text-[#0B1B30] group-hover:text-[#F5BF3C] transition-colors">
                     <span>Learn More</span>
                     <div className="grid h-6 w-6 place-items-center rounded-full bg-[#F7F9FC] text-[#F5BF3C] transition-all group-hover:bg-[#F5BF3C] group-hover:text-[#071525] group-hover:translate-x-1">
                       <ArrowRight className="h-3 w-3" />

@@ -4,7 +4,7 @@ import { business, navLinks } from "@/lib/business";
 
 export function Footer() {
   return (
-    <footer className="bg-[#050D17] text-white pt-16 pb-28 sm:pb-16 border-t border-[#101E32]">
+    <footer className="bg-[#050D17] text-white pt-14 sm:pt-16 pb-12 sm:pb-16 border-t border-[#101E32]">
       <div className="container-site">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 pb-14 border-b border-white/10">
           {/* Col 1: Brand & Logo */}
@@ -108,22 +108,5 @@ export function Footer() {
         </div>
       </div>
     </footer>
-  );
-}
-
-export function MobileCallBar() {
-  return (
-    <aside
-      aria-label="Mobile emergency call action"
-      className="fixed inset-x-0 bottom-0 z-40 h-[64px] border-t border-[#101E32] bg-[#071525]/95 backdrop-blur-md px-4 flex items-center sm:hidden shadow-2xl pb-[env(safe-area-inset-bottom)]"
-    >
-      <a
-        href={business.phoneHref}
-        className="w-full flex h-12 items-center justify-center gap-2 rounded-lg bg-[#F5BF3C] font-display text-xs font-extrabold tracking-wider text-[#071525] uppercase shadow-md active:scale-[0.99] hover:bg-[#FFD45A] transition-all"
-      >
-        <Phone className="h-4 w-4" />
-        <span>CALL DIAMOND · {business.phone}</span>
-      </a>
-    </aside>
   );
 }
