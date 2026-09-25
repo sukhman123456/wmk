@@ -8,7 +8,6 @@ import {
   DollarSign,
   HardHat,
   Layers,
-  MapPin,
   Phone,
   Shield,
   ShieldCheck,
@@ -529,22 +528,18 @@ export function ServiceAreaSection() {
 
           {/* Right Column: Local Map Visual Card (cols 8-12) */}
           <div className="lg:col-span-5 rounded-2xl border border-[#E2E8F0] bg-white p-5 sm:p-7 shadow-sm flex flex-col justify-between">
-            <div className="aspect-16/10 rounded-xl overflow-hidden border border-[#E2E8F0] bg-[#071525] relative flex items-center justify-center">
-              {/* Abstract Map Background Grids */}
-              <div className="absolute inset-0 bg-subtle-grid opacity-30" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#071525] via-transparent to-[#071525]/60" />
-
-              {/* Pulsing Pin */}
-              <div className="relative z-10 flex flex-col items-center gap-2">
-                <div className="relative">
-                  <span className="animate-ping absolute inline-flex h-8 w-8 rounded-full bg-[#F5BF3C] opacity-60"></span>
-                  <div className="relative grid h-8 w-8 place-items-center rounded-full bg-[#F5BF3C] text-[#071525] shadow-lg">
-                    <MapPin className="h-4 w-4" />
-                  </div>
-                </div>
-                <span className="font-display text-xs font-black uppercase tracking-wider text-white bg-black/60 px-3 py-1 rounded-md backdrop-blur-sm">
-                  Brampton, ON
-                </span>
+            {/* Real Interactive Google Map */}
+            <div className="relative aspect-16/10 min-h-[220px] w-full rounded-xl overflow-hidden border border-[#E2E8F0] bg-[#E2E8F0] shadow-inner">
+              <iframe
+                title="Diamond Roof Repair Location - 349 Inspire Blvd, Brampton, ON"
+                src="https://maps.google.com/maps?q=349+Inspire+Blvd,+Brampton,+ON+L6R+4E4&t=&z=14&ie=UTF8&iwloc=&output=embed"
+                className="w-full h-full border-0"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+              <div className="pointer-events-none absolute top-2.5 left-2.5 z-10 flex items-center gap-1.5 rounded-md bg-[#071525]/90 px-2.5 py-1 text-[11px] font-display font-bold uppercase tracking-wider text-white shadow-md backdrop-blur-sm border border-white/10">
+                <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>Brampton, ON</span>
               </div>
             </div>
 
